@@ -6,10 +6,10 @@ from watchdog.observers import Observer
 import knock
 
 
-class dictionary_watcher:
-    def __init__(self, knocker, directory=""):
+class directory_watcher:
+    def __init__(self, rkit, directory=""):
         self.directory = directory
-        self.knocker = knocker
+        self.rkit = rkit
         self.my_event_handler = None
         self.my_observer = Observer()
         self.on = False
@@ -21,7 +21,7 @@ class dictionary_watcher:
         if not self.on:
             patterns = ["*"]
             ignore_patterns = None
-            ignore_directories = False
+            ignore_directories = True
             case_sensitive = True
             self.my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories,
                                                                 case_sensitive)
@@ -42,4 +42,4 @@ class dictionary_watcher:
         return "Watch not on"
 
     def watch_handler(self, event):
-        print("New file or file changed " + event.src_path)
+        self.rkit.file_get(event.src_path)

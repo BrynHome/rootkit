@@ -1,14 +1,14 @@
 import os
 
-import knock
+import rkit
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 
 
 class file_watcher:
-    def __init__(self, knocker, file="", f_path = ""):
+    def __init__(self, rkit, file="", f_path = ""):
         self.file = file
-        self.knocker = knocker
+        self.rkit = rkit
         self.f_path = f_path
         self.my_event_handler = None
         self.my_observer = Observer()
@@ -26,7 +26,7 @@ class file_watcher:
         if not self.on:
             patterns = [self.file]
             ignore_patterns = None
-            ignore_directories = False
+            ignore_directories = True
             case_sensitive = True
             self.my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories,
                                                                 case_sensitive)
@@ -47,4 +47,4 @@ class file_watcher:
         return "Watch not on"
 
     def watch_handler(self, event):
-        print("New file or file changed " + event.src_path)
+        self.rkit.file_get(event.src_path)
