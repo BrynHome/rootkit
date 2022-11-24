@@ -1,3 +1,4 @@
+import cryptography.fernet
 from cryptography.fernet import Fernet
 
 
@@ -9,4 +10,7 @@ class encryption:
         return self.key.encrypt(data.encode('utf-8'))
 
     def decrypt(self, encrypted_data):
-        return self.key.decrypt(encrypted_data)
+        try:
+            d = self.key.decrypt(encrypted_data)
+        except cryptography.fernet.InvalidToken:
+            return b"Nope"
