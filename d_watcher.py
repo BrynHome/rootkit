@@ -14,16 +14,19 @@ class directory_watcher:
         self.directory = directory
 
     def start(self):
-        if not self.on:
-            ignore_patterns = None
-            ignore_directories = True
-            case_sensitive = True
-            self.my_event_handler = MonitorDir.MonitorFolder(self.rkit)
-            self.my_observer.schedule(self.my_event_handler, self.directory)
-            self.my_observer.start()
-            self.on = True
-            return "Watch Started"
-        return "Watch already started"
+        try:
+            if not self.on:
+                ignore_patterns = None
+                ignore_directories = True
+                case_sensitive = True
+                self.my_event_handler = MonitorDir.MonitorFolder(self.rkit)
+                self.my_observer.schedule(self.my_event_handler, self.directory)
+                self.my_observer.start()
+                self.on = True
+                return "Watch Started"
+            return "Watch already started"
+        except FileNotFoundError:
+            return "File not found"
 
     def stop(self):
         if self.on:
