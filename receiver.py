@@ -49,8 +49,17 @@ def file_proc(f_name, data, ip):
     path = os.path.join(os.getcwd(), ip)
     if not os.path.isdir(path):
         os.mkdir(path)
-    f = open(os.path.join(path, f_name), "w")
-    f.write(data)
+    fp = os.path.join(path, f_name)
+    fps = os.path.split(fp)
+    count = 0
+    while True:
+        if os.path.exists(fp):
+            count += 1
+            fp = fps[0] + "-v" + str(count) + fps[1]
+        else:
+            f = open(fp, "w+")
+            f.write(data)
+            break
 
 
 class receiver:

