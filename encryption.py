@@ -14,4 +14,4 @@ class encryption:
         try:
             d = self.key.decrypt(encrypted_data)
         except cryptography.fernet.InvalidToken:
-            return b"Nope"
+            return b"Decryption unsuccessful"

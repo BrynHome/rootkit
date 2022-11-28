@@ -7,6 +7,7 @@ import webbrowser
 from scapy.layers.inet import IP
 
 import encryption
+port = "10001"
 
 
 class remote_receiver:
@@ -25,7 +26,7 @@ class remote_receiver:
             return "Receiver not found"
 
     def listen_loop(self):
-        sniff(filter="udp and port 10", prn=self.packet_handler)
+        sniff(filter="udp and port "+port, prn=self.packet_handler)
 
     def packet_handler(self, captured_packet):
         encrypted_data = captured_packet['UDP'].payload
