@@ -55,7 +55,7 @@ def file_proc(f_name, data, ip):
     while True:
         if os.path.exists(fp):
             count += 1
-            fp = fps[0] + "-v" + str(count) + fps[1]
+            fp = fps[0] + "/" + fps[1] + "-v" + str(count)
         else:
             f = open(fp, "w+")
             f.write(data)

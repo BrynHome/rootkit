@@ -33,6 +33,7 @@ class directory_watcher:
         if self.on:
             self.my_observer.stop()
             self.my_observer.join()
+            self.my_observer = Observer()
             self.on = False
             return "Watch Stopped"
         return "Watch not on"

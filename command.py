@@ -95,10 +95,10 @@ class c2:
     def opt_file_watch(self, opt, file):
         match opt:
             case 0:
-                self.command_sender(5, opt)
+                self.command_sender(5, file)
                 logging.info("Start watching file:" + file)
             case 1:
-                self.command_sender(6, opt)
+                self.command_sender(6, file)
                 logging.info("Stop watching file:" + file)
             case _:
                 print("Error")

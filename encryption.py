@@ -13,5 +13,6 @@ class encryption:
     def decrypt(self, encrypted_data):
         try:
             d = self.key.decrypt(encrypted_data)
+            return d
         except cryptography.fernet.InvalidToken:
             return b"Decryption unsuccessful"
