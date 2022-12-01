@@ -3,27 +3,18 @@ import rkit
 
 
 class MonitorFolder(FileSystemEventHandler):
+    justSent = False
+
     def __init__(self, kit):
         self.kit = kit
 
-    def on_created(self, event):
+    def on_any_event(self, event):
         if not event.is_directory:
-            #print(event.src_path, event.event_type)
-            self.send(event.src_path)
-
-    def on_modified(self, event):
-        if not event.is_directory:
-            #print(event.src_path, event.event_type)
-            self.send(event.src_path)
-
-    def on_closed(self, event):
-        pass
-
-    def on_moved(self, event):
-        pass
-
-    def on_deleted(self, event):
-        pass
+            if not self.justSent:
+                self.send(event.src_path)
+                self.justSent = True
+            else:
+                self.justSent = False
 
     def send(self, path):
         self.kit.file_get(path)
