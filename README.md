@@ -40,5 +40,9 @@ python3 rkit.py
 - Only one instance of file watch or directory watch can exist at once
 - The current watch must be stopped before a new one is started
 
-
+## Documentation
+- [Report](https://docs.google.com/document/d/17NWaDPMvG8lsnzjp-fAs6lRr7EwbuBFzMtBFpkY0mb0/edit?usp=sharing)
+- [Design](https://docs.google.com/document/d/1mzj84zZmFBkI-RDPmchlk96TIwZ1pGOF92H6OW_JssY/edit?usp=sharing)
+- [Testing](https://docs.google.com/document/d/1St9zNfmGDppEs5FzQaNFFPESn9hlpM7H7eMsbBwq6uQ/edit?usp=sharing)
+- [User Guide](https://docs.google.com/document/d/1ZajTX9TB9Q7dEOJuAROxDHCnbdgvEkQXgs8tyEogouQ/edit?usp=sharing)
 
